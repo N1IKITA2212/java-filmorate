@@ -1,19 +1,25 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import ru.yandex.practicum.filmorate.validation.ValidReleaseDate;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(of = {"id"})
 public class Film {
     private Integer id;
+    @NotBlank(message = "Название не может быть пустым")
     private String name;
+    @NotBlank(message = "Не указано описание")
+    @Size(max = 200, message = "Длина описание не должна превышать 200 символов")
     private String description;
-    private Integer duration; // В минутах
+    @NotNull(message = "Не указана продолжительность")
+    @Positive(message = "Продолжительность должна быть положительным числом")
+    private Integer duration;
+    @NotNull(message = "Дата выхода не указана")
+    @ValidReleaseDate// В минутах
     private LocalDate releaseDate;
 }
