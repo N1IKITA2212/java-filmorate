@@ -46,10 +46,10 @@ public class UserController {
             throw new NotEnoughDataException("Отсутствует ID");
         }
         if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
             if (user.getName() == null || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
+            users.put(user.getId(), user);
             log.info("Пользователь с id {} обновлен", user.getId());
             return user;
         }
