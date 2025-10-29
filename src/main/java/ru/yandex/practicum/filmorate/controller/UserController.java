@@ -8,16 +8,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("users")
 @Slf4j
 @AllArgsConstructor
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
     private final UserStorage userStorage;
     private final UserService userService;
 
