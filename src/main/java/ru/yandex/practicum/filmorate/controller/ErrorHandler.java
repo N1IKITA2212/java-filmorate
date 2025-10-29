@@ -13,19 +13,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse NotEnoughDataHandler(NotEnoughDataException e) {
+    public ErrorResponse notEnoughDataHandler(NotEnoughDataException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse NotFoundHandler(NotFoundException e) {
+    public ErrorResponse notFoundHandler(NotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse ValidationErrorHandler(ValidationException e) {
+    public ErrorResponse validationErrorHandler(ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
