@@ -9,10 +9,13 @@ import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.validation.ValidReleaseDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(of = {"id"})
 public class Film {
+    private Set<Integer> likes = new HashSet<>();
     private Integer id;
     @NotBlank(message = "Название не может быть пустым")
     private String name;
