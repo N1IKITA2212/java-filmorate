@@ -14,4 +14,6 @@ public interface UserStorage {
     User updateUser(User user);
 
     Optional<User> getUser(int userId);
+
+    boolean isUserPresent(Integer id);
 }

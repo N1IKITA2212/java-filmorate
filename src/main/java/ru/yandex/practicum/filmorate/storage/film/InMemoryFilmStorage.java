@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotEnoughDataException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
@@ -34,17 +32,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if (film.getId() == null) {
-            log.error("Ошибка обновления фильма. В запросе не передан id");
-            throw new NotEnoughDataException("Не заполнено поле id", "id");
-        }
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-            log.info("Фильм с id {} обновлен", film.getId());
-            return film;
-        }
-        log.error("Фильм с id {} не найден", film.getId());
-        throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
+        films.put(film.getId(), film);
+        log.info("Фильм с id {} обновлен", film.getId());
+        return film;
     }
 
     private Integer getNewId() {
@@ -52,5 +42,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         return ++currentId;
     }
 
-
+    @Override
+    public boolean isFilmPresent(Integer id) {
+        return films.containsKey(id);
+    }
 }

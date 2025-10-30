@@ -14,4 +14,6 @@ public interface FilmStorage {
     Film updateFilm(Film film);
 
     Optional<Film> getFilm(int filmId);
+
+    boolean isFilmPresent(Integer id);
 }
