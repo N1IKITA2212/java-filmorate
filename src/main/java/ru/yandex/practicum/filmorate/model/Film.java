@@ -28,4 +28,6 @@ public class Film {
     @NotNull(message = "Дата выхода не указана")
     @ValidReleaseDate// В минутах
     private LocalDate releaseDate;
+    private Genre genre;
+    private Rating rating;
 }
