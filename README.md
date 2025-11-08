@@ -60,7 +60,7 @@ src/
 1. Клонируйте репозиторий:
 
 ```bash
-git clone https://github.com/ваш-репозиторий/java-filmorate.git
+git clone https://github.com/N1IKITA2212/java-filmorate.git
 ```
 
 2. Перейдите в каталог проекта
