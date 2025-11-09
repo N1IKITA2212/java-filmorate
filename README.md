@@ -180,11 +180,13 @@ SELECT f.film_id,
        f.description,
        f.releaseDate,
        f.duration,
-       g.name  AS genre,
+       STRING_AGG(g.name, ', ') AS genres,
        r.name  AS rating
 FROM film f
-LEFT JOIN genre g ON f.genre_id = g.genre_id
-LEFT JOIN rating r ON f.rating_id = r.rating_id;
+LEFT JOIN film_genre fg ON f.film_id = fg.film_id
+LEFT JOIN genre g ON fg.genre_id = g.genre_id
+LEFT JOIN rating r ON f.rating_id = r.rating_id
+GROUP BY f.film_id, f.name, f.description, f.releaseDate, f.duration, r.name;
 ```
 
 ### 🎥 2. Получить фильм по ID
@@ -196,12 +198,14 @@ SELECT f.film_id,
        f.description,
        f.releaseDate,
        f.duration,
-       g.name  AS genre,
+       STRING_AGG(g.name, ', ') AS genres,
        r.name  AS rating
 FROM film f
+LEFT JOIN film_genre fg ON f.film_id = fg.film_id
 LEFT JOIN genre g ON f.genre_id = g.genre_id
 LEFT JOIN rating r ON f.rating_id = r.rating_id
-WHERE f.film_id = :id;
+WHERE f.film_id = :id
+GROUP BY f.film_id, f.name, f.description, f.releaseDate, f.duration, r.name;
 ```
 
 ### 🧑‍🤝‍🧑 3. Получить список друзей пользователя
