@@ -1,0 +1,9 @@
+INSERT INTO ratings (id, name)
+SELECT * FROM (
+    SELECT 1 AS id, 'G' AS name UNION ALL
+    SELECT 2, 'PG' UNION ALL
+    SELECT 3, 'PG-13' UNION ALL
+    SELECT 4, 'R' UNION ALL
+    SELECT 5, 'NC-17'
+) AS tmp
+WHERE NOT EXISTS (SELECT 1 FROM ratings);
