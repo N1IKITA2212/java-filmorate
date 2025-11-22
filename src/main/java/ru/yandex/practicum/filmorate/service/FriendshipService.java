@@ -35,9 +35,6 @@ public class FriendshipService {
         if (!userStorage.isUserPresent(user_id) || !userStorage.isUserPresent(friend_id)) {
             throw new NotFoundException("Пользователь не найден");
         }
-        if (!friendshipStorage.areFriends(user_id, friend_id)) {
-            throw new InternalServerException("Пользователи не являются друзьями");
-        }
         friendshipStorage.removeFriend(user_id, friend_id);
     }
 }

@@ -1,64 +1,118 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.film.FilmDto;
+import ru.yandex.practicum.filmorate.dto.film.PostFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.film.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.exception.NotEnoughDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FilmMapper filmMapper;
+
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       FilmMapper filmMapper) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.filmMapper = filmMapper;
+    }
 
     public void addLike(Integer filmId, Integer userId) {
-        Film film = getFilmOrThrow(filmId);
-        User user = getUserOrThrow(userId);
-
-        film.getLikes().add(userId);
+        if (!filmStorage.isFilmPresent(filmId)) {
+            throw new NotFoundException("Фильм с id " + filmId + " не найден");
+        }
+        if (!userStorage.isUserPresent(userId)) {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден");
+        }
+        filmStorage.addLike(filmId, userId);
     }
 
     public void removeLike(Integer filmId, Integer userId) {
-        Film film = getFilmOrThrow(filmId);
-        User user = getUserOrThrow(userId);
-
-        film.getLikes().remove(userId);
+        if (!filmStorage.isFilmPresent(filmId)) {
+            throw new NotFoundException("Фильм с id " + filmId + " не найден");
+        }
+        if (!userStorage.isUserPresent(userId)) {
+            throw new NotFoundException("Пользователь с id " + userId + " не найден");
+        }
+        if (getFilmOrThrow(filmId).getLikes().contains(userId)) {
+            filmStorage.removeLike(filmId, userId);
+        }
     }
 
-    public List<Film> getMostLikedFilms(int count) {
+    public List<FilmDto> getMostLikedFilms(int count) {
         return filmStorage.getAllFilms().stream()
                 .sorted(Comparator.comparing((Film film) -> film.getLikes().size()).reversed())
-                .limit(count).toList();
+                .limit(count)
+                .map(film -> getFilmDtoOrThrow(film.getId()))
+                .collect(Collectors.toList());
     }
 
-    public Film getFilmById(Integer id) {
-        return getFilmOrThrow(id);
+    public FilmDto getFilmById(Integer id) {
+        return getFilmDtoOrThrow(id);
     }
 
-    public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+    /**
+     * Возвращает список всех фильмов в виде DTO.
+     *
+     * <p>Шаги:
+     * <ul>
+     * <li> Получает список всех фильмов из хранилища.</li>
+     * <li> Для каждого фильма вызывает метод {@code getFilmDtoOrThrow}, чтобы преобразовать сущность фильма в DTO.</li>
+     * <li> Собирает преобразованные DTO в список и возвращает его.</li>
+     * </ul>
+     *
+     * @return список всех фильмов в виде объектов {@code FilmDto}
+     */
+    public List<FilmDto> getAllFilms() {
+        return filmStorage.getAllFilms().stream()
+                .map(film -> getFilmDtoOrThrow(film.getId()))
+                .collect(Collectors.toList());
     }
 
-    public Film addFilm(Film film) {
-        return filmStorage.addFilm(film);
+    public FilmDto addFilm(PostFilmRequestDto postFilmRequestDto) {
+
+        Film addedFilm = filmStorage.addFilm(filmMapper.toFilmFromPostRequestDto(postFilmRequestDto));
+        Set<Integer> genresId = addedFilm.getGenres().stream().map(Genre::getId).collect(Collectors.toSet());
+        filmStorage.addGenresForFilm(addedFilm.getId(), genresId);
+        List<String> addedFilmGenres = filmStorage.getFilmGenre(addedFilm.getId());
+        String addedFilmRating = filmStorage.getFilmRating(addedFilm.getId());
+        return filmMapper.toDto(addedFilm, addedFilmRating, addedFilmGenres, new ArrayList<>());
     }
 
-    public Film updateFilm(Film film) {
-        if (film.getId() == null) {
+    public FilmDto updateFilm(UpdateFilmRequestDto updateFilmRequestDto) {
+        if (updateFilmRequestDto.getId() == null) {
             log.error("Ошибка обновления фильма. В запросе не передан id");
             throw new NotEnoughDataException("Не заполнено поле id", "id");
         }
+        Film film = filmMapper.toFilmFromUpdateRequestDto(updateFilmRequestDto);
         if (filmStorage.isFilmPresent(film.getId())) {
-            return filmStorage.updateFilm(film);
+            Film updatedFilm = filmStorage.updateFilm(film);
+            Set<Integer> genresId = film.getGenres().stream().map(Genre::getId).collect(Collectors.toSet());
+            filmStorage.updateFilmGenre(film.getId(), genresId);
+            List<String> updatedFilmGenres = filmStorage.getFilmGenre(film.getId());
+            String updatedFilmRating = filmStorage.getFilmRating(updatedFilm.getId());
+            List<String> updatedFilmLikes = filmStorage.getUsersNamesLikedFilm(film.getId());
+            return filmMapper.toDto(updatedFilm, updatedFilmRating, updatedFilmGenres, updatedFilmLikes);
         }
         log.error("Фильм с id {} не найден", film.getId());
         throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
@@ -72,5 +126,34 @@ public class FilmService {
     private User getUserOrThrow(Integer id) {
         return userStorage.getUser(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
+    }
+
+    /**
+     * Возвращает DTO фильма по его идентификатору или выбрасывает исключение, если фильм не найден.
+     *
+     * <p>Шаги:
+     * <ul>
+     * <li> Проверяет наличие фильма в хранилище по идентификатору. Если фильм отсутствует, выбрасывает NotFoundException.</li>
+     * <li> Получает сущность фильма из хранилища. Если фильм отсутствует, выбрасывает NotFoundException.</li>
+     * <li> Получает рейтинг фильма из хранилища.</li>
+     * <li> Получает список жанров фильма из хранилища.</li>
+     * <li> Получает список имён пользователей, поставивших лайк фильму.</li>
+     * <li> Преобразует сущность фильма в DTO с использованием FilmMapper.</li>
+     * </ul>
+     *
+     * @param id идентификатор фильма
+     * @return DTO фильма с заполненными полями рейтинга, жанров и лайков
+     * @throws NotFoundException если фильм с указанным идентификатором не найден
+     */
+    private FilmDto getFilmDtoOrThrow(Integer id) {
+        if (!filmStorage.isFilmPresent(id)) {
+            throw new NotFoundException("Фильм с id " + id + " не найден");
+        }
+        Film film = filmStorage.getFilm(id)
+                .orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
+        String rating = filmStorage.getFilmRating(id);
+        List<String> genres = filmStorage.getFilmGenre(id);
+        List<String> likes = filmStorage.getUsersNamesLikedFilm(id);
+        return filmMapper.toDto(film, rating, genres, likes);
     }
 }

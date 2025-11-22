@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.dto.film.FilmDto;
+import ru.yandex.practicum.filmorate.dto.film.PostFilmRequestDto;
+import ru.yandex.practicum.filmorate.dto.film.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
@@ -17,22 +19,22 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public List<Film> getFilms() {
+    public List<FilmDto> getFilms() {
         return filmService.getAllFilms();
     }
 
     @PostMapping
-    public Film postFilm(@Valid @RequestBody Film film) {
-        return filmService.addFilm(film);
+    public FilmDto postFilm(@Valid @RequestBody PostFilmRequestDto requestDto) {
+        return filmService.addFilm(requestDto);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmService.updateFilm(film);
+    public FilmDto updateFilm(@Valid @RequestBody UpdateFilmRequestDto updateFilmRequestDto) {
+        return filmService.updateFilm(updateFilmRequestDto);
     }
 
     @GetMapping("/{filmId}")
-    public Film getFilmById(@PathVariable Integer filmId) {
+    public FilmDto getFilmById(@PathVariable Integer filmId) {
         return filmService.getFilmById(filmId);
     }
 
@@ -47,7 +49,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getMostLikedFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<FilmDto> getMostLikedFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getMostLikedFilms(count);
     }
 }

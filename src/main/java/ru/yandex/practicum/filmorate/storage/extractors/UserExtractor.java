@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UserWithFriendsExtractor implements ResultSetExtractor<List<User>> {
+public class UserExtractor implements ResultSetExtractor<List<User>> {
 
     @Override
     public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {

@@ -1,24 +1,17 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto.film;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.validation.ValidReleaseDate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
-@EqualsAndHashCode(of = {"id"})
-public class Film {
-    private Set<Integer> likes = new HashSet<>();
-    private Integer id;
+public class PostFilmRequestDto {
     @NotBlank(message = "Название не может быть пустым")
     private String name;
     @NotBlank(message = "Не указано описание")
@@ -30,6 +23,17 @@ public class Film {
     @NotNull(message = "Дата выхода не указана")
     @ValidReleaseDate// В минутах
     private LocalDate releaseDate;
-    private List<Genre> genres = new ArrayList<>();
-    private RatingMpa mpa;
+    @NotNull
+    private MpaRequest mpa;
+    private List<GenreRequest> genres;
+
+    @Data
+    public static class MpaRequest {
+        private Integer id;
+    }
+
+    @Data
+    public static class GenreRequest {
+        Integer id;
+    }
 }
