@@ -34,6 +34,22 @@ public enum Genre {
     }
 
     /**
+     * Получить жанр по его идентификатору.
+     *
+     * @param id идентификатор жанра
+     * @return объект Genre
+     * @throws NotFoundException если жанр с указанным id не найден
+     */
+    public static Genre getGenreById(int id) {
+        for (Genre genre : Genre.values()) {
+            if (genre.id == id) {
+                return genre;
+            }
+        }
+        throw new NotFoundException("Неизвестный id жанра " + id);
+    }
+
+    /**
      * Получить идентификатор жанра.
      *
      * @return id жанра
@@ -49,21 +65,5 @@ public enum Genre {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Получить жанр по его идентификатору.
-     *
-     * @param id идентификатор жанра
-     * @return объект Genre
-     * @throws NotFoundException если жанр с указанным id не найден
-     */
-    public static Genre getGenreById(int id) {
-        for (Genre genre : Genre.values()) {
-            if (genre.id == id) {
-                return genre;
-            }
-        }
-        throw new NotFoundException("Неизвестный id жанра " + id);
     }
 }

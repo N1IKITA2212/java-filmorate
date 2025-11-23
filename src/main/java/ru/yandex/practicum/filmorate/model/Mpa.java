@@ -19,14 +19,6 @@ public enum Mpa {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public static Mpa getMpaById(int id) {
         for (Mpa mpa : Mpa.values()) {
             if (mpa.id.equals(id)) {
@@ -34,5 +26,13 @@ public enum Mpa {
             }
         }
         throw new NotFoundException("Неизвестный id mpa " + id);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

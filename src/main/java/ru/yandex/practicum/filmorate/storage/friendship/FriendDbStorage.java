@@ -12,25 +12,22 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class FriendDbStorage implements FriendshipStorage {
 
-    private final JdbcTemplate jdbc;
-
     /**
      * SQL-запрос для добавления записи о дружбе
      */
     private static final String ADD_FRIEND =
             "INSERT into friendship (user_id, friend_id) VALUES (?, ?)";
-
     /**
      * SQL-запрос для удаления записи о дружбе
      */
     private static final String REMOVE_FRIEND =
             "DELETE from friendship WHERE user_id = ? AND friend_id = ?";
-
     /**
      * SQL-запрос для проверки существования дружбы между пользователями
      */
     private static final String SELECT_PAIR_COUNT =
             "SELECT COUNT(*) FROM friendship WHERE user_id = ? AND friend_id = ?";
+    private final JdbcTemplate jdbc;
 
     /**
      * Добавляет дружбу между двумя пользователями.
