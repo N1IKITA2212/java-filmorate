@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
      * SQL-запрос для загрузки всех фильмов вместе с жанрами и лайками.
      * Используется LEFT JOIN — фильм будет получен даже если у него нет жанров или лайков.
      */
-    private final static String GET_ALL_FILMS_WITH_GENRES_AND_MPA = """
+    private static final String GET_ALL_FILMS_WITH_GENRES_AND_MPA = """
             SELECT
             f.id,
             f.name,
@@ -50,7 +50,7 @@ public class FilmDbStorage implements FilmStorage {
     /**
      * SQL-запрос для добавления нового фильма.
      */
-    private final static String INSERT_FILM_QUERY = "INSERT INTO films (name, description, duration, release_date," +
+    private static final String INSERT_FILM_QUERY = "INSERT INTO films (name, description, duration, release_date," +
             " rating_id) VALUES (?, ?, ?, ?, ?)";
     /**
      * SQL-запрос для обновления существующего фильма.
