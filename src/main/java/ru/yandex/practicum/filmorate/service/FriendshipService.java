@@ -30,23 +30,23 @@ public class FriendshipService {
      * - что оба пользователя существуют,
      * - что пользователи еще не являются друзьями.
      *
-     * @param user_id   идентификатор пользователя
-     * @param friend_id идентификатор друга
-     * @throws IllegalArgumentException если user_id == friend_id
+     * @param userId   идентификатор пользователя
+     * @param friendId идентификатор друга
+     * @throws IllegalArgumentException если userId == friendId
      * @throws NotFoundException        если один из пользователей не найден
      * @throws InternalServerException  если пользователи уже дружат
      */
-    public void addFriend(int user_id, int friend_id) {
-        if (user_id == friend_id) {
+    public void addFriend(int userId, int friendId) {
+        if (userId == friendId) {
             throw new IllegalArgumentException("Нельзя добавлять в друзья самого себя");
         }
-        if (!userStorage.isUserPresent(user_id) || !userStorage.isUserPresent(friend_id)) {
+        if (!userStorage.isUserPresent(userId) || !userStorage.isUserPresent(friendId)) {
             throw new NotFoundException("Пользователь не найден");
         }
-        if (friendshipStorage.areFriends(user_id, friend_id)) {
+        if (friendshipStorage.areFriends(userId, friendId)) {
             throw new InternalServerException("Пользователи уже дружат");
         }
-        friendshipStorage.addFriend(user_id, friend_id);
+        friendshipStorage.addFriend(userId, friendId);
     }
 
     /**
