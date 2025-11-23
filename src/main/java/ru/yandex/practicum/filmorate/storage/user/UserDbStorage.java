@@ -54,8 +54,6 @@ public class UserDbStorage implements UserStorage {
             """;
 
     private final JdbcTemplate jdbc;
-    private final RowMapper<User> userRowMapper;
-    private final RowMapper<Integer> friendIdRowMapper;
     private final ResultSetExtractor<List<User>> userResultSetExtractor;
     private final RowMapper<String> emailRowMapper;
 
