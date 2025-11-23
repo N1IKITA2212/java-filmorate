@@ -11,30 +11,70 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DTO для запроса на создание нового фильма.
+ * Содержит все необходимые поля для валидации и передачи данных при POST-запросе.
+ */
 @Data
 public class PostFilmRequestDto {
+
+    /**
+     * Название фильма. Не может быть пустым
+     */
     @NotBlank(message = "Название не может быть пустым")
     private String name;
+
+    /**
+     * Описание фильма. Не может быть пустым, максимум 200 символов
+     */
     @NotBlank(message = "Не указано описание")
     @Size(max = 200, message = "Длина описания не должна превышать 200 символов")
     private String description;
+
+    /**
+     * Продолжительность фильма в минутах. Должна быть положительной
+     */
     @NotNull(message = "Не указана продолжительность")
     @Positive(message = "Продолжительность должна быть положительным числом")
     private Integer duration;
+
+    /**
+     * Дата выхода фильма. Проверяется кастомной аннотацией @ValidReleaseDate
+     */
     @NotNull(message = "Дата выхода не указана")
-    @ValidReleaseDate// В минутах
+    @ValidReleaseDate
     private LocalDate releaseDate;
+
+    /**
+     * Рейтинг MPA фильма. Обязательное поле
+     */
     @NotNull
     private MpaRequest mpa;
+
+    /**
+     * Список жанров фильма (опционально)
+     */
     private List<GenreRequest> genres = new ArrayList<>();
 
+    /**
+     * DTO для передачи информации о рейтинге MPA.
+     */
     @Data
     public static class MpaRequest {
+        /**
+         * Идентификатор рейтинга
+         */
         private Integer id;
     }
 
+    /**
+     * DTO для передачи информации о жанре фильма.
+     */
     @Data
     public static class GenreRequest {
-        Integer id;
+        /**
+         * Идентификатор жанра
+         */
+        private Integer id;
     }
 }

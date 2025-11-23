@@ -11,9 +11,22 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Mapper для преобразования между сущностью Film и DTO.
+ * Обеспечивает конвертацию как в сторону DTO, так и из запросов Post/Update в модель.
+ */
 @Component
 public class FilmMapper {
 
+    /**
+     * Преобразует объект Film в DTO FilmDto.
+     *
+     * @param film   объект модели фильма
+     * @param mpa    рейтинг MPA фильма
+     * @param genres список жанров фильма
+     * @param likes  список email пользователей, поставивших лайк
+     * @return FilmDto с заполненными полями
+     */
     public FilmDto toDto(Film film, Mpa mpa, List<Genre> genres, List<String> likes) {
         FilmDto filmDto = new FilmDto();
         filmDto.setId(film.getId());
@@ -28,6 +41,13 @@ public class FilmMapper {
         return filmDto;
     }
 
+    /**
+     * Преобразует PostFilmRequestDto в объект Film.
+     * Используется при создании нового фильма.
+     *
+     * @param postFilmRequestDto DTO запроса на создание фильма
+     * @return объект Film с заполненными полями
+     */
     public Film toFilmFromPostRequestDto(PostFilmRequestDto postFilmRequestDto) {
         Film film = new Film();
         film.setName(postFilmRequestDto.getName());
@@ -44,6 +64,13 @@ public class FilmMapper {
         return film;
     }
 
+    /**
+     * Преобразует UpdateFilmRequestDto в объект Film.
+     * Используется при обновлении существующего фильма.
+     *
+     * @param updateFilmRequestDto DTO запроса на обновление фильма
+     * @return объект Film с заполненными полями
+     */
     public Film toFilmFromUpdateRequestDto(UpdateFilmRequestDto updateFilmRequestDto) {
         Film film = new Film();
         film.setId(updateFilmRequestDto.getId());
