@@ -8,11 +8,9 @@ public enum Genre {
     Comedy(1, "Комедия"),
     Drama(2, "Драма"),
     Cartoon(3, "Мультфильм"),
-    Fantasy(4, "Фантастика"),
-    Historical(5, "Исторический"),
-    Horror(6, "Ужасы"),
-    Melodrama(7, "Мелодрама"),
-    Adventure(8, "Приключения");
+    Thriller(4, "Триллер"),
+    Documentary(5, "Документальный"),
+    Action(6, "Боевик");
 
 
     private final int id;

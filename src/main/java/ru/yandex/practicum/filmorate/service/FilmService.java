@@ -176,8 +176,10 @@ public class FilmService {
         List<Genre> addedFilmGenres = postFilmRequestDto.getGenres().stream()
                 .map(PostFilmRequestDto.GenreRequest::getId)
                 .map(genreStorage::getGenreById)
+                .map(genreOpt -> genreOpt.orElseThrow(() -> new NotFoundException("Переданных жанров нет в базе")))
                 .collect(Collectors.toList());
-        Mpa addedFilmMpa = mpaStorage.getMpaById(postFilmRequestDto.getMpa().getId());
+        Mpa addedFilmMpa = mpaStorage.getMpaById(postFilmRequestDto.getMpa().getId())
+                .orElseThrow(() -> new NotFoundException("Рейтинг с таким id не существует"));
         return filmMapper.toDto(addedFilm, addedFilmMpa, addedFilmGenres, new ArrayList<>());
     }
 
@@ -215,8 +217,10 @@ public class FilmService {
             List<Genre> updatedFilmGenres = updateFilmRequestDto.getGenres().stream()
                     .map(UpdateFilmRequestDto.GenreRequest::getId)
                     .map(genreStorage::getGenreById)
+                    .map(genreOpt -> genreOpt.orElseThrow(() -> new NotFoundException("Переданных жанров нет в базе")))
                     .collect(Collectors.toList());
-            Mpa updatedFilmMpa = mpaStorage.getMpaById(updateFilmRequestDto.getMpa().getId());
+            Mpa updatedFilmMpa = mpaStorage.getMpaById(updateFilmRequestDto.getMpa().getId())
+                    .orElseThrow(() -> new NotFoundException("Рейтинг с таким id не существует"));
             List<String> updatedFilmLikes = filmStorage.getUsersNamesLikedFilm(film.getId());
             return filmMapper.toDto(updatedFilm, updatedFilmMpa, updatedFilmGenres, updatedFilmLikes);
         }
@@ -271,7 +275,8 @@ public class FilmService {
         }
         Film film = filmStorage.getFilm(id)
                 .orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
-        Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+        Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId())
+                .orElseThrow(() -> new NotFoundException("Рейтинг с таким id не существует"));
         List<Genre> genres = film.getGenres();
         List<String> likes = filmStorage.getUsersNamesLikedFilm(id);
         return filmMapper.toDto(film, mpa, genres, likes);
