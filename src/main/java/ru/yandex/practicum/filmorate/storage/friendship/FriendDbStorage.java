@@ -32,35 +32,35 @@ public class FriendDbStorage implements FriendshipStorage {
     /**
      * Добавляет дружбу между двумя пользователями.
      *
-     * @param user_id   идентификатор пользователя
-     * @param friend_id идентификатор друга
+     * @param userId   идентификатор пользователя
+     * @param friendId идентификатор друга
      */
     @Override
-    public void addFriend(int user_id, int friend_id) {
-        jdbc.update(ADD_FRIEND, user_id, friend_id);
+    public void addFriend(int userId, int friendId) {
+        jdbc.update(ADD_FRIEND, userId, friendId);
     }
 
     /**
      * Удаляет дружбу между двумя пользователями.
      *
-     * @param user_id   идентификатор пользователя
-     * @param friend_id идентификатор друга
+     * @param userId   идентификатор пользователя
+     * @param friendId идентификатор друга
      */
     @Override
-    public void removeFriend(int user_id, int friend_id) {
-        jdbc.update(REMOVE_FRIEND, user_id, friend_id);
+    public void removeFriend(int userId, int friendId) {
+        jdbc.update(REMOVE_FRIEND, userId, friendId);
     }
 
     /**
      * Проверяет, являются ли два пользователя друзьями.
      *
-     * @param user_id   идентификатор пользователя
-     * @param friend_id идентификатор друга
+     * @param userId   идентификатор пользователя
+     * @param friendId идентификатор друга
      * @return true, если запись о дружбе существует; false — иначе
      */
     @Override
-    public boolean areFriends(int user_id, int friend_id) {
-        Integer count = jdbc.queryForObject(SELECT_PAIR_COUNT, Integer.class, user_id, friend_id);
+    public boolean areFriends(int userId, int friendId) {
+        Integer count = jdbc.queryForObject(SELECT_PAIR_COUNT, Integer.class, userId, friendId);
         return count >= 1;
     }
 }

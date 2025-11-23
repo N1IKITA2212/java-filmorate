@@ -53,14 +53,14 @@ public class FriendshipService {
      * Удаляет друга пользователя.
      * Проверяет существование обоих пользователей.
      *
-     * @param user_id   идентификатор пользователя
-     * @param friend_id идентификатор друга
+     * @param userId   идентификатор пользователя
+     * @param friendId идентификатор друга
      * @throws NotFoundException если один из пользователей не найден
      */
-    public void removeFriend(int user_id, int friend_id) {
-        if (!userStorage.isUserPresent(user_id) || !userStorage.isUserPresent(friend_id)) {
+    public void removeFriend(int userId, int friendId) {
+        if (!userStorage.isUserPresent(userId) || !userStorage.isUserPresent(friendId)) {
             throw new NotFoundException("Пользователь не найден");
         }
-        friendshipStorage.removeFriend(user_id, friend_id);
+        friendshipStorage.removeFriend(userId, friendId);
     }
 }
