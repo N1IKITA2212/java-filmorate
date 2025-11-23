@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMpa;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,7 +32,7 @@ public class FilmExtractor implements ResultSetExtractor<List<Film>> {
                     f.setDescription(rs.getString("description"));
                     f.setDuration(rs.getInt("duration"));
                     f.setReleaseDate(rs.getObject("release_date", LocalDate.class));
-                    f.setMpa(RatingMpa.getMpaById(rs.getInt("rating_id")));
+                    f.setMpa(Mpa.getMpaById(rs.getInt("rating_id")));
                 } catch (SQLException e) {
                     throw new InternalServerException("Ошибка при получении фильма");
                 }

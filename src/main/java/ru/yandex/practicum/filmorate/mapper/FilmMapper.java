@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.dto.film.PostFilmRequestDto;
 import ru.yandex.practicum.filmorate.dto.film.UpdateFilmRequestDto;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMpa;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class FilmMapper {
 
-    public FilmDto toDto(Film film, String rating, List<String> genres, List<String> likes) {
+    public FilmDto toDto(Film film, Mpa mpa, List<Genre> genres, List<String> likes) {
         FilmDto filmDto = new FilmDto();
         filmDto.setId(film.getId());
         filmDto.setName(film.getName());
         filmDto.setDescription(film.getDescription());
         filmDto.setReleaseDate(film.getReleaseDate());
         filmDto.setDuration(film.getDuration());
-        filmDto.setMpa(rating);
+        filmDto.setMpa(mpa);
         filmDto.setGenres(genres);
         filmDto.setLikes(likes);
 
@@ -35,7 +35,7 @@ public class FilmMapper {
         film.setDescription(postFilmRequestDto.getDescription());
         film.setReleaseDate(postFilmRequestDto.getReleaseDate());
 
-        film.setMpa(RatingMpa.getMpaById(postFilmRequestDto.getMpa().getId()));
+        film.setMpa(Mpa.getMpaById(postFilmRequestDto.getMpa().getId()));
         List<Genre> genres = postFilmRequestDto.getGenres().stream()
                 .map(PostFilmRequestDto.GenreRequest::getId)
                 .map(Genre::getGenreById)
@@ -52,9 +52,9 @@ public class FilmMapper {
         film.setDescription(updateFilmRequestDto.getDescription());
         film.setReleaseDate(updateFilmRequestDto.getReleaseDate());
 
-        film.setMpa(RatingMpa.getMpaById(updateFilmRequestDto.getMpa().getId()));
+        film.setMpa(Mpa.getMpaById(updateFilmRequestDto.getMpa().getId()));
         List<Genre> genres = updateFilmRequestDto.getGenres().stream()
-                .map(PostFilmRequestDto.GenreRequest::getId)
+                .map(UpdateFilmRequestDto.GenreRequest::getId)
                 .map(Genre::getGenreById)
                 .collect(Collectors.toList());
         film.setGenres(genres);

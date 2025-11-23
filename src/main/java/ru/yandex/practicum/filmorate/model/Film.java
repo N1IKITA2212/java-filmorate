@@ -31,5 +31,5 @@ public class Film {
     @ValidReleaseDate// В минутах
     private LocalDate releaseDate;
     private List<Genre> genres = new ArrayList<>();
-    private RatingMpa mpa;
+    private Mpa mpa;
 }

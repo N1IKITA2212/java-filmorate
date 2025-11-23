@@ -11,12 +11,12 @@ WHERE NOT EXISTS (SELECT 1 FROM ratings);
 INSERT INTO genres (id, name)
 SELECT * FROM (
     SELECT 1 AS id, 'Comedy' AS name UNION ALL
-    SELECT 2, 'Action' UNION ALL
-    SELECT 3, 'Adventure' UNION ALL
-    SELECT 4, 'Drama' UNION ALL
-    SELECT 5, 'Fantasy' UNION ALL
-    SELECT 6, 'Historical' UNION ALL
-    SELECT 7, 'Horror' UNION ALL
-    SELECT 8, 'Melodrama'
+    SELECT 2, 'Drama' UNION ALL
+    SELECT 3, 'Cartoon' UNION ALL
+    SELECT 4, 'Fantasy' UNION ALL
+    SELECT 5, 'Historical' UNION ALL
+    SELECT 6, 'Horror' UNION ALL
+    SELECT 7, 'Melodrama' UNION ALL
+    SELECT 8, 'Adventure'
 ) AS tmp
 WHERE NOT EXISTS (SELECT 1 FROM genres);

@@ -8,6 +8,7 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.validation.ValidReleaseDate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,8 +26,8 @@ public class UpdateFilmRequestDto {
     @ValidReleaseDate// В минутах
     private LocalDate releaseDate;
     @NotNull
-    private PostFilmRequestDto.MpaRequest mpa;
-    private List<PostFilmRequestDto.GenreRequest> genres;
+    private MpaRequest mpa;
+    private List<GenreRequest> genres = new ArrayList<>();
 
     @Data
     public static class MpaRequest {

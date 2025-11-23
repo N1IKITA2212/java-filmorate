@@ -1,24 +1,34 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
-@Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Genre {
-    Comedy(1),
-    Action(2),
-    Adventure(3),
-    Drama(4),
-    Fantasy(5),
-    Historical(6),
-    Horror(7),
-    Melodrama(8);
+    Comedy(1, "Комедия"),
+    Drama(2, "Драма"),
+    Cartoon(3, "Мультфильм"),
+    Fantasy(4, "Фантастика"),
+    Historical(5, "Исторический"),
+    Horror(6, "Ужасы"),
+    Melodrama(7, "Мелодрама"),
+    Adventure(8, "Приключения");
 
 
     private final int id;
+    private final String name;
 
-    Genre(int id) {
+    Genre(int id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static Genre getGenreById(int id) {

@@ -11,8 +11,11 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
@@ -28,13 +31,18 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final FilmMapper filmMapper;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
 
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        @Qualifier("userDbStorage") UserStorage userStorage,
+                       MpaStorage mpaStorage, GenreStorage genreStorage,
                        FilmMapper filmMapper) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.filmMapper = filmMapper;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
     }
 
     public void addLike(Integer filmId, Integer userId) {
@@ -94,9 +102,12 @@ public class FilmService {
         Film addedFilm = filmStorage.addFilm(filmMapper.toFilmFromPostRequestDto(postFilmRequestDto));
         Set<Integer> genresId = addedFilm.getGenres().stream().map(Genre::getId).collect(Collectors.toSet());
         filmStorage.addGenresForFilm(addedFilm.getId(), genresId);
-        List<String> addedFilmGenres = filmStorage.getFilmGenre(addedFilm.getId());
-        String addedFilmRating = filmStorage.getFilmRating(addedFilm.getId());
-        return filmMapper.toDto(addedFilm, addedFilmRating, addedFilmGenres, new ArrayList<>());
+        List<Genre> addedFilmGenres = postFilmRequestDto.getGenres().stream()
+                .map(PostFilmRequestDto.GenreRequest::getId)
+                .map(genreStorage::getGenreById)
+                .collect(Collectors.toList());
+        Mpa addedFilmMpa = mpaStorage.getMpaById(postFilmRequestDto.getMpa().getId());
+        return filmMapper.toDto(addedFilm, addedFilmMpa, addedFilmGenres, new ArrayList<>());
     }
 
     public FilmDto updateFilm(UpdateFilmRequestDto updateFilmRequestDto) {
@@ -109,10 +120,13 @@ public class FilmService {
             Film updatedFilm = filmStorage.updateFilm(film);
             Set<Integer> genresId = film.getGenres().stream().map(Genre::getId).collect(Collectors.toSet());
             filmStorage.updateFilmGenre(film.getId(), genresId);
-            List<String> updatedFilmGenres = filmStorage.getFilmGenre(film.getId());
-            String updatedFilmRating = filmStorage.getFilmRating(updatedFilm.getId());
+            List<Genre> updatedFilmGenres = updateFilmRequestDto.getGenres().stream()
+                    .map(UpdateFilmRequestDto.GenreRequest::getId)
+                    .map(genreStorage::getGenreById)
+                    .collect(Collectors.toList());
+            Mpa updatedFilmMpa = mpaStorage.getMpaById(updateFilmRequestDto.getMpa().getId());
             List<String> updatedFilmLikes = filmStorage.getUsersNamesLikedFilm(film.getId());
-            return filmMapper.toDto(updatedFilm, updatedFilmRating, updatedFilmGenres, updatedFilmLikes);
+            return filmMapper.toDto(updatedFilm, updatedFilmMpa, updatedFilmGenres, updatedFilmLikes);
         }
         log.error("Фильм с id {} не найден", film.getId());
         throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
@@ -151,9 +165,9 @@ public class FilmService {
         }
         Film film = filmStorage.getFilm(id)
                 .orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
-        String rating = filmStorage.getFilmRating(id);
-        List<String> genres = filmStorage.getFilmGenre(id);
+        Mpa mpa = mpaStorage.getMpaById(film.getMpa().getId());
+        List<Genre> genres = film.getGenres();
         List<String> likes = filmStorage.getUsersNamesLikedFilm(id);
-        return filmMapper.toDto(film, rating, genres, likes);
+        return filmMapper.toDto(film, mpa, genres, likes);
     }
 }
