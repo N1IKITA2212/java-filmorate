@@ -30,6 +30,7 @@ class FilmDbStorageTest {
         jdbcTemplate.update("DELETE FROM film_genre");
         jdbcTemplate.update("DELETE FROM film_likes");
         jdbcTemplate.update("DELETE FROM films");
+        jdbcTemplate.update("DELETE FROM users");
         jdbcTemplate.update("INSERT INTO users (email, login, name, birthday) VALUES ('test@mail.com','login1','User1','2000-01-01')");
     }
 
