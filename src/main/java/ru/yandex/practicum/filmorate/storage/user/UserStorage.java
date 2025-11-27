@@ -16,4 +16,6 @@ public interface UserStorage {
     Optional<User> getUser(int userId);
 
     boolean isUserPresent(Integer id);
+
+    List<String> getFriendsEmails(int id);
 }

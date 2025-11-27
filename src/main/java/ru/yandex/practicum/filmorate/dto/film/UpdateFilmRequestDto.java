@@ -1,34 +1,25 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto.film;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.validation.ValidReleaseDate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
- * Модель фильма.
- * Используется для хранения информации о фильмах внутри приложения.
+ * DTO для запроса на обновление существующего фильма.
+ * Содержит поля, необходимые для обновления фильма через PUT-запрос.
  */
 @Data
-@EqualsAndHashCode(of = {"id"})
-public class Film {
+public class UpdateFilmRequestDto {
 
     /**
-     * Множество идентификаторов пользователей, поставивших лайк фильму
-     */
-    private Set<Integer> likes = new HashSet<>();
-
-    /**
-     * Уникальный идентификатор фильма
+     * Уникальный идентификатор фильма. Обязателен для обновления существующего фильма
      */
     private Integer id;
 
@@ -60,12 +51,35 @@ public class Film {
     private LocalDate releaseDate;
 
     /**
-     * Список жанров фильма
+     * Рейтинг MPA фильма. Обязательное поле
      */
-    private List<Genre> genres = new ArrayList<>();
+    @NotNull
+    private MpaRequest mpa;
 
     /**
-     * Рейтинг MPA фильма
+     * Список жанров фильма (опционально)
      */
-    private Mpa mpa;
+    private List<GenreRequest> genres = new ArrayList<>();
+
+    /**
+     * DTO для передачи информации о рейтинге MPA.
+     */
+    @Data
+    public static class MpaRequest {
+        /**
+         * Идентификатор рейтинга
+         */
+        private Integer id;
+    }
+
+    /**
+     * DTO для передачи информации о жанре фильма.
+     */
+    @Data
+    public static class GenreRequest {
+        /**
+         * Идентификатор жанра
+         */
+        private Integer id;
+    }
 }
